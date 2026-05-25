@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Concept Studio</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #080807;
+      --panel: #12110f;
+      --panel-2: #191713;
+      --text: #f7f0e6;
+      --muted: #b8aaa0;
+      --line: rgba(255,255,255,0.14);
+      --accent: #f0c6aa;
+      --accent-dark: #2a1a12;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: radial-gradient(circle at top left, #21160f 0, #080807 35%, #050505 100%);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .page {
+      width: min(1180px, calc(100% - 28px));
+      margin: 14px auto;
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      overflow: hidden;
+      background: rgba(10, 10, 9, 0.9);
+      box-shadow: 0 24px 80px rgba(0,0,0,0.55);
+    }
+
+    header {
+      min-height: 620px;
+      background:
+        linear-gradient(90deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.58) 42%, rgba(0,0,0,0.16) 100%),
+        url("https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?auto=format&fit=crop&w=1800&q=85");
+      background-size: cover;
+      background-position: center;
+      position: relative;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 26px 42px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-size: 15px;
+    }
+
+    .logo-mark {
+      width: 34px;
+      height: 34px;
+      border: 1px solid var(--text);
+      display: grid;
+      place-items: center;
+      border-radius: 6px;
+      font-family: Georgia, serif;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      font-size: 14px;
+      color: #f5eadf;
+    }
+
+    .nav-links a.active { border-bottom: 2px solid var(--accent); padding-bottom: 8px; }
+
+    .socials { display: flex; gap: 10px; }
+    .socials a {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.92);
+      color: #111;
+      display: grid;
+      place-items: center;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .hero-content {
+      padding: 92px 42px 60px;
+      max-width: 560px;
+    }
+
+    .hero-content h1 {
+      font-family: Georgia, serif;
+      font-size: clamp(58px, 9vw, 108px);
+      line-height: 0.92;
+      letter-spacing: -4px;
+      margin-bottom: 26px;
+    }
+
+    .hero-content p {
+      color: #efe0d2;
+      font-size: 19px;
+      max-width: 420px;
+      margin-bottom: 28px;
+    }
+
+    .hero-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--accent);
+      color: #130c08;
+      padding: 14px 24px;
+      border-radius: 999px;
+      font-weight: 700;
+      transition: .2s;
+    }
+
+    .hero-btn:hover { transform: translateY(-2px); opacity: .9; }
+
+    main { padding: 38px 42px 54px; }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    .section-head h2 {
+      font-family: Georgia, serif;
+      font-size: 34px;
+      font-weight: 500;
+    }
+
+    .spark { color: var(--accent); margin-right: 8px; }
+
+    .filters {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+
+    .filter-btn {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.03);
+      color: var(--text);
+      padding: 10px 18px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: .2s;
+    }
+
+    .filter-btn.active,
+    .filter-btn:hover {
+      background: var(--accent);
+      color: #130c08;
+      border-color: var(--accent);
+    }
+
+    .concept-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+    }
+
+    .concept-card {
+      min-height: 210px;
+      border-radius: 18px;
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+      border: 1px solid var(--line);
+      background: #222;
+      isolation: isolate;
+      transition: .25s;
+    }
+
+    .concept-card:hover { transform: translateY(-5px); border-color: rgba(240,198,170,.7); }
+
+    .concept-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      position: absolute;
+      inset: 0;
+      z-index: -2;
+      filter: brightness(.72);
+      transition: .3s;
+    }
+
+    .concept-card:hover img { transform: scale(1.04); filter: brightness(.88); }
+
+    .concept-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,0.08), rgba(0,0,0,0.78));
+      z-index: -1;
+    }
+
+    .card-text {
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      bottom: 16px;
+    }
+
+    .card-text small {
+      font-size: 11px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #ead6c9;
+      font-weight: 700;
+    }
+
+    .card-text h3 {
+      font-family: Georgia, serif;
+      font-size: 24px;
+      line-height: 1.1;
+      margin: 6px 0;
+    }
+
+    .card-text p { font-size: 13px; color: #e7d7cb; }
+
+    .more-wrap { text-align: center; margin: 26px 0 34px; }
+
+    .outline-btn {
+      display: inline-flex;
+      gap: 10px;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 12px 28px;
+      color: var(--text);
+      background: rgba(255,255,255,0.02);
+    }
+
+    .features {
+      border-top: 1px solid var(--line);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 22px;
+      padding-top: 28px;
+    }
+
+    .feature {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      border-right: 1px solid var(--line);
+      min-height: 58px;
+    }
+
+    .feature:last-child { border-right: none; }
+    .feature-icon { font-size: 26px; color: var(--accent); }
+    .feature b { display: block; font-size: 15px; }
+    .feature span { display: block; color: var(--muted); font-size: 13px; }
+
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(0,0,0,.9);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .lightbox.active { display: flex; }
+
+    .viewer {
+      width: min(1040px, 100%);
+      border: 1px solid rgba(255,255,255,.22);
+      border-radius: 24px;
+      background: rgba(14,14,13,.96);
+      overflow: hidden;
+      box-shadow: 0 24px 90px rgba(0,0,0,.75);
+    }
+
+    .viewer-top {
+      height: 62px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 22px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .viewer-top-left {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .counter { color: var(--muted); font-size: 13px; }
+
+    .close {
+      border: 0;
+      background: transparent;
+      color: white;
+      font-size: 36px;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .photo-area {
+      position: relative;
+      background: #050505;
+      display: grid;
+      place-items: center;
+      min-height: 520px;
+    }
+
+    .main-photo {
+      width: 100%;
+      max-height: 68vh;
+      object-fit: contain;
+      display: block;
+    }
+
+    .arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,.25);
+      background: rgba(255,255,255,.08);
+      color: white;
+      font-size: 34px;
+      cursor: pointer;
+    }
+
+    .arrow.left { left: 18px; }
+    .arrow.right { right: 18px; }
+
+    .thumbs {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding: 14px 20px 20px;
+      background: #10100f;
+    }
+
+    .thumbs img {
+      width: 92px;
+      height: 68px;
+      object-fit: cover;
+      border-radius: 10px;
+      opacity: .6;
+      border: 2px solid transparent;
+      cursor: pointer;
+      flex: 0 0 auto;
+    }
+
+    .thumbs img.active {
+      opacity: 1;
+      border-color: var(--accent);
+    }
+
+    .mobile-bottom-nav {
+      display: none;
+      position: fixed;
+      left: 12px;
+      right: 12px;
+      bottom: 12px;
+      background: rgba(16,16,15,.94);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      z-index: 50;
+      overflow: hidden;
+      box-shadow: 0 14px 40px rgba(0,0,0,.55);
+    }
+
+    .mobile-bottom-nav a {
+      flex: 1;
+      text-align: center;
+      padding: 10px 4px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .mobile-bottom-nav a b { display: block; font-size: 18px; color: var(--text); line-height: 1; }
+
+    @media (max-width: 900px) {
+      .page { width: 100%; margin: 0; border-radius: 0; border-left: none; border-right: none; }
+      .topbar { padding: 18px 20px; }
+      .nav-links, .socials { display: none; }
+      header { min-height: 520px; }
+      .hero-content { padding: 86px 22px 50px; }
+      main { padding: 30px 18px 90px; }
+      .concept-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+      .concept-card { min-height: 180px; }
+      .features { grid-template-columns: 1fr 1fr; }
+      .feature { border-right: none; }
+      .mobile-bottom-nav { display: flex; }
+      .photo-area { min-height: 430px; }
+    }
+
+    @media (max-width: 520px) {
+      header { min-height: 460px; }
+      .hero-content h1 { letter-spacing: -2px; }
+      .hero-content p { font-size: 16px; }
+      .section-head h2 { font-size: 28px; }
+      .concept-grid { grid-template-columns: 1fr 1fr; }
+      .concept-card { min-height: 158px; border-radius: 15px; }
+      .card-text { left: 12px; right: 12px; bottom: 12px; }
+      .card-text h3 { font-size: 20px; }
+      .card-text p { font-size: 12px; }
+      .features { grid-template-columns: 1fr; }
+      .lightbox { padding: 10px; }
+      .viewer { border-radius: 18px; }
+      .photo-area { min-height: 360px; }
+      .main-photo { max-height: 58vh; }
+      .arrow { width: 38px; height: 38px; font-size: 28px; }
+      .arrow.left { left: 8px; }
+      .arrow.right { right: 8px; }
+      .thumbs img { width: 72px; height: 56px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header id="home">
+      <div class="topbar">
+        <a class="logo" href="#home">
+          <span class="logo-mark">F</span>
+          <span>Concept<br>Studio</span>
+        </a>
+        <nav class="nav-links">
+          <a class="active" href="#home">Trang chủ</a>
+          <a href="#concepts">Concepts</a>
+          <a href="#service">Dịch vụ</a>
+          <a href="#contact">Liên hệ</a>
+        </nav>
+        <button id="themeToggle" style="border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.06);color:white;padding:10px 16px;border-radius:999px;cursor:pointer;margin-right:12px;">☀️</button><div class="socials">
+          <a href="https://facebook.com/yourpage" target="_blank">f</a>
+          <a href="https://zalo.me/0123456789" target="_blank">Zalo</a>
+          <a href="https://instagram.com/yourpage" target="_blank">IG</a>
+        </div>
+      </div>
+
+      <div class="hero-content">
+        <h1>Concept<br>Studio</h1>
+        <p>Biến ý tưởng của bạn thành những bộ ảnh đẹp và khác biệt.</p>
+        <a class="hero-btn" href="#concepts">Xem Concepts <span>→</span></a>
+      </div>
+    </header>
+
+    <main>
+      <section id="concepts">
+        <div class="section-head">
+          <h2><span class="spark">✦</span>Concepts nổi bật</h2>
+          <a class="outline-btn" href="#contact">Tư vấn ngay →</a>
+        </div>
+
+        <div class="filters">
+          <button class="filter-btn active" onclick="filterCards('all', this)">Tất cả</button>
+          <button class="filter-btn" onclick="filterCards('lookbook', this)">Lookbook</button>
+          <button class="filter-btn" onclick="filterCards('birthday', this)">Sinh nhật</button>
+          <button class="filter-btn" onclick="filterCards('custom', this)">Custom</button>
+          <button class="filter-btn" onclick="filterCards('ready', this)">Concept sẵn</button>
+        </div>
+
+        <div class="concept-grid">
+          <article class="concept-card" data-category="lookbook" onclick="openAlbum('Urban Street', albums.urbanStreet)">
+            <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=900&q=80" alt="Urban Street">
+            <div class="card-text"><small>Lookbook</small><h3>Urban Street</h3><p>12 ảnh</p></div>
+          </article>
+
+          <article class="concept-card" data-category="birthday" onclick="openAlbum('Birthday Vibes', albums.birthdayVibes)">
+            <img src="https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?auto=format&fit=crop&w=900&q=80" alt="Birthday Vibes">
+            <div class="card-text"><small>Sinh nhật</small><h3>Birthday Vibes</h3><p>15 ảnh</p></div>
+          </article>
+
+          <article class="concept-card" data-category="custom" onclick="openAlbum('Couple Story', albums.coupleStory)">
+            <img src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=900&q=80" alt="Couple Story">
+            <div class="card-text"><small>Custom</small><h3>Couple Story</h3><p>18 ảnh</p></div>
+          </article>
+
+          <article class="concept-card" data-category="ready" onclick="openAlbum('Night Football', albums.nightFootball)">
+            <img src="https://images.unsplash.com/photo-1577223625816-7546f13df25d?auto=format&fit=crop&w=900&q=80" alt="Night Football">
+            <div class="card-text"><small>Concept sẵn</small><h3>Night Football</h3><p>14 ảnh</p></div>
+          </article>
+
+          <article class="concept-card" data-category="lookbook" onclick="openAlbum('Cafe Vibes', albums.cafeVibes)">
+            <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=900&q=80" alt="Cafe Vibes">
+            <div class="card-text"><small>Lookbook</small><h3>Cafe Vibes</h3><p>13 ảnh</p></div>
+          </article>
+
+          <article class="concept-card" data-category="custom" onclick="openAlbum('Mood Portrait', albums.moodPortrait)">
+            <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=900&q=80" alt="Mood Portrait">
+            <div class="card-text"><small>Custom</small><h3>Mood Portrait</h3><p>11 ảnh</p></div>
+          </article>
+
+          <article class="concept-card" data-category="ready" onclick="openAlbum('Basketball', albums.basketball)">
+            <img src="https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=900&q=80" alt="Basketball">
+            <div class="card-text"><small>Concept sẵn</small><h3>Basketball</h3><p>16 ảnh</p></div>
+          </article>
+
+          <article class="concept-card" data-category="lookbook" onclick="openAlbum('Minimal', albums.minimal)">
+            <img src="https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=900&q=80" alt="Minimal">
+            <div class="card-text"><small>Lookbook</small><h3>Minimal</h3><p>10 ảnh</p></div>
+          </article>
+        </div>
+
+        <div class="more-wrap">
+          <a class="outline-btn" href="https://zalo.me/0123456789" target="_blank">Gửi concept bạn thích →</a>
+        </div>
+      </section>
+
+      <section class="features" id="service">
+        <div class="feature"><div class="feature-icon">💡</div><div><b>Ý tưởng sáng tạo</b><span>Concept độc đáo</span></div></div>
+        <div class="feature"><div class="feature-icon">📷</div><div><b>Chất lượng hình ảnh</b><span>Chỉnh sửa chuyên nghiệp</span></div></div>
+        <div class="feature"><div class="feature-icon">🎨</div><div><b>Phong cách riêng</b><span>Thể hiện cá tính</span></div></div>
+        <div class="feature" id="contact"><div class="feature-icon">💬</div><div><b>Tư vấn & hỗ trợ</b><span>Đồng hành cùng bạn</span></div></div>
+      </section>
+    </main>
+  </div>
+
+  <div class="mobile-bottom-nav">
+    <a href="#home"><b>⌂</b>Trang chủ</a>
+    <a href="#concepts"><b>▣</b>Concept</a>
+    <a href="https://zalo.me/0123456789" target="_blank"><b>☏</b>Liên hệ</a>
+  </div>
+
+  <div class="lightbox" id="lightbox">
+    <div class="viewer">
+      <div class="viewer-top">
+        <div class="viewer-top-left">
+          <strong id="albumTitle">Album</strong>
+          <span class="counter" id="counter">1 / 1</span>
+        </div>
+        <button class="close" onclick="closeAlbum()">×</button>
+      </div>
+      <div class="photo-area">
+        <button class="arrow left" onclick="prevPhoto()">‹</button>
+        <img class="main-photo" id="mainPhoto" src="" alt="Ảnh concept">
+        <button class="arrow right" onclick="nextPhoto()">›</button>
+      </div>
+      <div class="thumbs" id="thumbs"></div>
+    </div>
+  </div>
+
+  <script>
+    const albums = {
+      urbanStreet: [
+        "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1400&q=85",
+        "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=1400&q=85",
+        "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1400&q=85",
+        "https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=1400&q=85"
+      ],
+      birthdayVibes: [
+        "https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?auto=format&fit=crop&w=1400&q=85",
+        "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?auto=format&fit=crop&w=1400&q=85",
+        "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1400&q=85",
+        "https://images.unsplash.com/photo-1504196606672-aef5c9cefc92?auto=format&fit=crop&w=1400&q=85"
+      ],
+      coupleStory: [
+        "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1400&q=85",
+        "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1400&q=85",
+        "https://images.unsplash.com/photo-1494774157365-9e04c6720e47?auto=format&fit=crop&w=1400&q=85",
+        "https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&w=1400&q=85"
+      ],
+      nightFootball: [
+        "https://images.unsplash.com/photo-1577223625816-7546f13df25d?auto=format&fit=crop&w=1400&q=85",
+        "https://images.unsplash.com/photo-1522778119026-d647f0596c20?auto=format&fit=crop&w=1400&q=85",
+        "https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?auto=format&fit=crop&w=1400&q=85"
+      ],
+      cafeVibes: [
+        "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1400&q=85",
+        "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1400&q=85",
+        "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=1400&q=85"
+      ],
+      moodPortrait: [
+        "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=1400&q=85",
+        "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1400&q=85",
+        "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=1400&q=85"
+      ],
+      basketball: [
+        "https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=1400&q=85",
+        "https://images.unsplash.com/photo-1519861531473-9200262188bf?auto=format&fit=crop&w=1400&q=85",
+        "https://images.unsplash.com/photo-1504450758481-7338eba7524a?auto=format&fit=crop&w=1400&q=85"
+      ],
+      minimal: [
+        "https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=1400&q=85",
+        "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1400&q=85",
+        "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=1400&q=85"
+      ]
+    };
+
+    let currentAlbum = [];
+    let currentIndex = 0;
+
+    function openAlbum(title, photos) {
+      currentAlbum = photos;
+      currentIndex = 0;
+      document.getElementById('albumTitle').textContent = title;
+      document.getElementById('lightbox').classList.add('active');
+      showPhoto();
+    }
+
+    function closeAlbum() {
+      document.getElementById('lightbox').classList.remove('active');
+    }
+
+    function showPhoto() {
+      document.getElementById('mainPhoto').src = currentAlbum[currentIndex];
+      document.getElementById('counter').textContent = `${currentIndex + 1} / ${currentAlbum.length}`;
+      const thumbs = document.getElementById('thumbs');
+      thumbs.innerHTML = '';
+      currentAlbum.forEach((photo, index) => {
+        const img = document.createElement('img');
+        img.src = photo;
+        img.className = index === currentIndex ? 'active' : '';
+        img.onclick = () => { currentIndex = index; showPhoto(); };
+        thumbs.appendChild(img);
+      });
+    }
+
+    function nextPhoto() {
+      currentIndex = (currentIndex + 1) % currentAlbum.length;
+      showPhoto();
+    }
+
+    function prevPhoto() {
+      currentIndex = (currentIndex - 1 + currentAlbum.length) % currentAlbum.length;
+      showPhoto();
+    }
+
+    function filterCards(category, button) {
+      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+      document.querySelectorAll('.concept-card').forEach(card => {
+        if (category === 'all' || card.dataset.category === category) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    document.getElementById('lightbox').addEventListener('click', function(e) {
+      if (e.target.id === 'lightbox') closeAlbum();
+    });
+
+    const themeToggle = document.getElementById('themeToggle');
+
+function applyTheme(mode) {
+  if(mode === 'light') {
+    document.documentElement.style.setProperty('--bg','#f9e7d3');
+    document.documentElement.style.setProperty('--panel','#ffffff');
+    document.documentElement.style.setProperty('--panel-2','#f7eee8');
+    document.documentElement.style.setProperty('--text','#1d1815');
+    document.documentElement.style.setProperty('--muted','#6c625a');
+    document.documentElement.style.setProperty('--line','rgba(0,0,0,0.1)');
+    document.body.style.background='linear-gradient(180deg,#f9e7d3,#fff8f4)';
+    themeToggle.textContent='🌙';
+  } else {
+    document.documentElement.style.removeProperty('--bg');
+    document.documentElement.style.removeProperty('--panel');
+    document.documentElement.style.removeProperty('--panel-2');
+    document.documentElement.style.removeProperty('--text');
+    document.documentElement.style.removeProperty('--muted');
+    document.documentElement.style.removeProperty('--line');
+    document.body.style.background='radial-gradient(circle at top left, #21160f 0, #080807 35%, #050505 100%)';
+    themeToggle.textContent='☀️';
+  }
+  localStorage.setItem('themeMode', mode);
+}
+
+const savedTheme = localStorage.getItem('themeMode') || 'dark';
+applyTheme(savedTheme);
+
+themeToggle.addEventListener('click', () => {
+  const current = localStorage.getItem('themeMode') || 'dark';
+  applyTheme(current === 'dark' ? 'light' : 'dark');
+});
+
+document.addEventListener('keydown', function(e) {
+      if (!document.getElementById('lightbox').classList.contains('active')) return;
+      if (e.key === 'Escape') closeAlbum();
+      if (e.key === 'ArrowRight') nextPhoto();
+      if (e.key === 'ArrowLeft') prevPhoto();
+    });
+  </script>
+</body>
+</html>
