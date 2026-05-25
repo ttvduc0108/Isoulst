@@ -4,64 +4,92 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Concept Studio</title>
-
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
 
     :root {
       --bg: #f8efe3;
       --page: #fffaf3;
-      --text: #241b16;
+      --panel: #fff7ed;
+      --panel-2: #f1dfcb;
+      --text: #1f1a17;
       --muted: #695a51;
-      --line: rgba(36, 27, 22, 0.14);
-      --soft: #fff7ed;
+      --line: rgba(31,26,23,0.13);
       --accent: #e9bd8f;
-      --accent-text: #241b16;
-      --shadow: rgba(90, 56, 30, 0.16);
-      --hero-overlay: linear-gradient(90deg, rgba(255,250,243,0.95), rgba(255,250,243,0.72), rgba(255,250,243,0.1));
-      --popup-bg: rgba(50, 34, 22, 0.54);
+      --accent-2: #c8905e;
+      --shadow: rgba(104, 72, 43, 0.16);
+
+      /* FIX: thêm biến riêng cho các màu cứng */
+      --btn-bg: rgba(255,255,255,0.48);
+      --outline-btn-bg: rgba(255,255,255,0.32);
+      --arrow-bg: rgba(255,255,255,0.5);
+      --hero-text: #1f1a17;
+      --social-bg: #1f1a17;
+      --social-text: #fffaf3;
     }
 
-    body.dark {
-      --bg: #090807;
-      --page: #0f0e0d;
-      --text: #fff7ef;
-      --muted: #b8aaa0;
-      --line: rgba(255, 255, 255, 0.14);
-      --soft: #171514;
-      --accent: #f0c6aa;
-      --accent-text: #110d0b;
-      --shadow: rgba(0, 0, 0, 0.58);
-      --hero-overlay: linear-gradient(90deg, rgba(0,0,0,0.92), rgba(0,0,0,0.62), rgba(0,0,0,0.18));
-      --popup-bg: rgba(0, 0, 0, 0.88);
-    }
+    html { scroll-behavior: smooth; }
 
     body {
       font-family: Arial, sans-serif;
-      background: radial-gradient(circle at top left, var(--soft) 0%, var(--bg) 48%, var(--bg) 100%);
+      background: radial-gradient(circle at top left, #fffaf4 0, var(--bg) 48%, #f1e2d1 100%);
       color: var(--text);
       line-height: 1.6;
+    }
+
+    body.dark {
+      --bg: #080807;
+      --page: #0d0c0b;
+      --panel: #12110f;
+      --panel-2: #191713;
+      --text: #f7f0e6;
+      --muted: #b8aaa0;
+      --line: rgba(255,255,255,0.14);
+      --accent: #f0c6aa;
+      --accent-2: #d7996f;
+      --shadow: rgba(0,0,0,0.55);
+      background: radial-gradient(circle at top left, #21160f 0, #080807 38%, #050505 100%);
+
+      /* FIX: ghi đè các biến màu cứng cho dark mode */
+      --btn-bg: rgba(255,255,255,0.06);
+      --outline-btn-bg: rgba(255,255,255,0.04);
+      --arrow-bg: rgba(255,255,255,0.1);
+      --hero-text: #f7f0e6;
+      --social-bg: #f0c6aa;
+      --social-text: #1f1a17;
     }
 
     a { color: inherit; text-decoration: none; }
 
     .page {
-      max-width: 1180px;
-      margin: 16px auto;
-      background: var(--page);
+      width: min(1180px, calc(100% - 28px));
+      margin: 14px auto;
       border: 1px solid var(--line);
       border-radius: 28px;
       overflow: hidden;
+      background: rgba(255, 250, 243, 0.88);
       box-shadow: 0 24px 80px var(--shadow);
     }
 
+    body.dark .page { background: rgba(10,10,9,0.9); }
+
     header {
-      min-height: 560px;
-      background: var(--hero-overlay), url("https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?auto=format&fit=crop&w=1800&q=85");
+      min-height: 570px;
+      background:
+        linear-gradient(90deg, rgba(255,250,243,0.94) 0%, rgba(255,250,243,0.76) 42%, rgba(255,250,243,0.08) 100%),
+        url("https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?auto=format&fit=crop&w=1800&q=85");
       background-size: cover;
       background-position: center;
+      position: relative;
       border-bottom: 1px solid var(--line);
+    }
+
+    body.dark header {
+      background:
+        linear-gradient(90deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.58) 42%, rgba(0,0,0,0.16) 100%),
+        url("https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?auto=format&fit=crop&w=1800&q=85");
+      background-size: cover;
+      background-position: center;
     }
 
     .topbar {
@@ -80,78 +108,100 @@
       letter-spacing: 2px;
       text-transform: uppercase;
       font-size: 15px;
-      color: var(--text);
     }
 
     .logo-mark {
       width: 34px;
       height: 34px;
       border: 1px solid var(--text);
-      border-radius: 8px;
       display: grid;
       place-items: center;
+      border-radius: 6px;
       font-family: Georgia, serif;
     }
 
-    .nav-links { display: flex; gap: 28px; font-size: 14px; color: var(--text); }
-    .nav-links a { opacity: 0.88; }
-    .nav-links a:hover { color: var(--accent); opacity: 1; }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      font-size: 14px;
+      color: var(--text);
+    }
+
+    .nav-links a.active { border-bottom: 2px solid var(--accent-2); padding-bottom: 8px; }
 
     .right-actions { display: flex; align-items: center; gap: 10px; }
 
-    .theme-open-btn {
+    .theme-toggle {
       width: 38px;
       height: 38px;
       border-radius: 50%;
       border: 1px solid var(--line);
-      background: var(--soft);
+      /* FIX: dùng var thay màu cứng */
+      background: var(--btn-bg);
       color: var(--text);
       cursor: pointer;
       font-size: 17px;
+      box-shadow: 0 8px 18px var(--shadow);
       display: grid;
       place-items: center;
     }
 
+    /* FIX: bỏ override cứng màu, dùng var rồi */
+
     .socials { display: flex; gap: 10px; }
     .socials a {
-      width: 36px;
-      height: 36px;
+      width: 34px;
+      height: 34px;
       border-radius: 50%;
-      background: var(--accent);
-      color: var(--accent-text);
+      /* FIX: dùng var */
+      background: var(--social-bg);
+      color: var(--social-text);
       display: grid;
       place-items: center;
       font-size: 12px;
       font-weight: bold;
+      transition: opacity .2s;
+    }
+    .socials a:hover { opacity: .8; }
+
+    .hero-content {
+      padding: 82px 42px 60px;
+      max-width: 560px;
     }
 
-    .hero-content { padding: 86px 42px 70px; max-width: 560px; }
     .hero-content h1 {
       font-family: Georgia, serif;
       font-size: clamp(58px, 8vw, 92px);
       line-height: 0.92;
       letter-spacing: -4px;
       margin-bottom: 26px;
-      color: var(--text);
     }
-    .hero-content p { max-width: 420px; font-size: 19px; margin-bottom: 28px; color: var(--muted); }
 
-    .hero-btn,
-    .outline-btn {
+    .hero-content p {
+      color: var(--text);
+      font-size: 19px;
+      max-width: 420px;
+      margin-bottom: 28px;
+    }
+
+    .hero-btn {
       display: inline-flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
+      background: var(--accent);
+      /* FIX: dùng var thay màu cứng */
+      color: var(--hero-text);
+      padding: 14px 24px;
       border-radius: 999px;
-      padding: 13px 24px;
-      font-weight: bold;
-      transition: 0.2s;
+      font-weight: 700;
+      transition: .2s;
+      box-shadow: 0 12px 28px rgba(168,110,62,0.22);
     }
 
-    .hero-btn { background: var(--accent); color: var(--accent-text); box-shadow: 0 12px 28px var(--shadow); }
-    .outline-btn { border: 1px solid var(--line); color: var(--text); background: rgba(255, 255, 255, 0.06); }
-    .hero-btn:hover, .outline-btn:hover { transform: translateY(-2px); opacity: 0.92; }
+    .hero-btn:hover { transform: translateY(-2px); opacity: .92; }
 
-    main { padding: 38px 42px 56px; }
+    main { padding: 38px 42px 54px; }
 
     .section-head {
       display: flex;
@@ -161,57 +211,125 @@
       margin-bottom: 22px;
     }
 
-    .section-head h2 { font-family: Georgia, serif; font-size: 34px; font-weight: 500; color: var(--text); }
-    .spark { color: var(--accent); margin-right: 8px; }
+    .section-head h2 {
+      font-family: Georgia, serif;
+      font-size: 34px;
+      font-weight: 500;
+    }
 
-    .filters { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
+    .spark { color: var(--accent-2); margin-right: 8px; }
+
+    .filters {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+
     .filter-btn {
       border: 1px solid var(--line);
-      background: var(--soft);
+      /* FIX: dùng var thay màu cứng */
+      background: var(--btn-bg);
       color: var(--text);
       padding: 10px 18px;
       border-radius: 999px;
       cursor: pointer;
-      transition: 0.2s;
-      font-weight: 600;
+      transition: .2s;
     }
-    .filter-btn.active, .filter-btn:hover { background: var(--accent); border-color: var(--accent); color: var(--accent-text); }
 
-    .concept-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+    /* FIX: bỏ override dark mode cứng vì đã dùng var */
+
+    .filter-btn.active,
+    .filter-btn:hover {
+      background: var(--accent);
+      color: var(--hero-text);
+      border-color: var(--accent);
+    }
+
+    .concept-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+    }
+
     .concept-card {
-      min-height: 220px;
-      border-radius: 20px;
+      min-height: 210px;
+      border-radius: 18px;
       overflow: hidden;
       position: relative;
       cursor: pointer;
       border: 1px solid var(--line);
-      background: #1a1715;
-      box-shadow: 0 18px 42px var(--shadow);
-      transition: 0.25s;
+      background: #222;
+      isolation: isolate;
+      transition: .25s;
+      box-shadow: 0 14px 35px rgba(84,55,31,0.12);
     }
-    .concept-card:hover { transform: translateY(-5px); border-color: var(--accent); }
+
+    .concept-card:hover { transform: translateY(-5px); border-color: rgba(200,144,94,.55); }
+
     .concept-card img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       position: absolute;
       inset: 0;
-      transition: 0.3s;
-      filter: brightness(0.82);
+      z-index: -2;
+      filter: brightness(.78);
+      transition: .3s;
     }
-    .concept-card:hover img { transform: scale(1.04); filter: brightness(0.95); }
+
+    .concept-card:hover img { transform: scale(1.04); filter: brightness(.92); }
+
     .concept-card::after {
       content: "";
       position: absolute;
       inset: 0;
-      background: linear-gradient(180deg, rgba(0,0,0,0.04), rgba(0,0,0,0.78));
+      background: linear-gradient(180deg, rgba(0,0,0,0.05), rgba(0,0,0,0.72));
+      z-index: -1;
     }
-    .card-text { position: absolute; left: 18px; right: 18px; bottom: 16px; z-index: 2; color: white; }
-    .card-text small { display: block; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: #f0c6aa; font-weight: bold; margin-bottom: 6px; }
-    .card-text h3 { font-family: Georgia, serif; font-size: 24px; line-height: 1.1; margin-bottom: 4px; color: #fff7ef; }
+
+    .card-text {
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      bottom: 16px;
+      color: white;
+    }
+
+    .card-text small {
+      font-size: 11px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #f4e3d7;
+      font-weight: 700;
+    }
+
+    .card-text h3 {
+      font-family: Georgia, serif;
+      font-size: 24px;
+      line-height: 1.1;
+      margin: 6px 0;
+    }
+
     .card-text p { font-size: 13px; color: #eaded5; }
 
-    .more-wrap { text-align: center; margin: 28px 0 36px; }
+    .more-wrap { text-align: center; margin: 26px 0 34px; }
+
+    .outline-btn {
+      display: inline-flex;
+      gap: 10px;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 12px 28px;
+      color: var(--text);
+      /* FIX: dùng var */
+      background: var(--outline-btn-bg);
+      transition: .2s;
+    }
+    .outline-btn:hover { background: var(--btn-bg); }
+
+    /* FIX: bỏ dark override cứng vì đã dùng var */
 
     .features {
       border-top: 1px solid var(--line);
@@ -220,31 +338,48 @@
       gap: 22px;
       padding-top: 28px;
     }
-    .feature { display: flex; gap: 12px; align-items: flex-start; min-height: 58px; }
-    .feature-icon { font-size: 26px; color: var(--accent); }
-    .feature b { display: block; font-size: 15px; color: var(--text); }
+
+    .feature {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      border-right: 1px solid var(--line);
+      min-height: 58px;
+    }
+
+    .feature:last-child { border-right: none; }
+    .feature-icon { font-size: 26px; color: var(--accent-2); }
+    .feature b { display: block; font-size: 15px; }
     .feature span { display: block; color: var(--muted); font-size: 13px; }
 
     .lightbox {
       position: fixed;
       inset: 0;
       z-index: 1000;
+      background: rgba(50,34,22,.5);
+      backdrop-filter: blur(16px);
       display: none;
       align-items: center;
       justify-content: center;
       padding: 24px;
-      background: var(--popup-bg);
-      backdrop-filter: blur(14px);
     }
+
+    body.dark .lightbox { background: rgba(0,0,0,.9); }
+
     .lightbox.active { display: flex; }
+
     .viewer {
       width: min(1040px, 100%);
-      background: var(--page);
       border: 1px solid var(--line);
       border-radius: 24px;
+      /* FIX: dùng var(--page) thay màu cứng */
+      background: var(--page);
       overflow: hidden;
       box-shadow: 0 24px 90px var(--shadow);
     }
+
+    /* FIX: bỏ dark override cứng vì đã dùng var */
+
     .viewer-top {
       height: 62px;
       display: flex;
@@ -252,14 +387,38 @@
       justify-content: space-between;
       padding: 0 22px;
       border-bottom: 1px solid var(--line);
-      color: var(--text);
     }
+
     .viewer-top-left { display: flex; flex-direction: column; gap: 2px; }
     .counter { color: var(--muted); font-size: 13px; }
-    .close { border: 0; background: transparent; color: var(--text); font-size: 36px; cursor: pointer; line-height: 1; }
-    .photo-area { position: relative; background: var(--soft); display: grid; place-items: center; min-height: 520px; }
-    body.dark .photo-area { background: #050505; }
-    .main-photo { width: 100%; max-height: 68vh; object-fit: contain; display: block; }
+
+    .close {
+      border: 0;
+      background: transparent;
+      color: var(--text);
+      font-size: 36px;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .photo-area {
+      position: relative;
+      /* FIX: dùng var(--panel-2) thay màu cứng */
+      background: var(--panel-2);
+      display: grid;
+      place-items: center;
+      min-height: 520px;
+    }
+
+    /* FIX: bỏ dark override cứng vì đã dùng var */
+
+    .main-photo {
+      width: 100%;
+      max-height: 68vh;
+      object-fit: contain;
+      display: block;
+    }
+
     .arrow {
       position: absolute;
       top: 50%;
@@ -268,52 +427,40 @@
       height: 48px;
       border-radius: 50%;
       border: 1px solid var(--line);
-      background: rgba(255, 255, 255, 0.09);
+      /* FIX: dùng var */
+      background: var(--arrow-bg);
       color: var(--text);
       font-size: 34px;
       cursor: pointer;
+      display: grid;
+      place-items: center;
     }
-    .arrow:hover { background: var(--accent); color: var(--accent-text); }
+
+    /* FIX: bỏ dark override cứng vì đã dùng var */
+
     .arrow.left { left: 18px; }
     .arrow.right { right: 18px; }
-    .thumbs { display: flex; gap: 10px; overflow-x: auto; padding: 14px 20px 20px; background: var(--soft); }
-    .thumbs img { width: 92px; height: 68px; object-fit: cover; border-radius: 10px; opacity: 0.58; border: 2px solid transparent; cursor: pointer; flex: 0 0 auto; }
-    .thumbs img.active { opacity: 1; border-color: var(--accent); }
 
-    .theme-popup {
-      position: fixed;
-      inset: 0;
-      z-index: 1200;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      background: rgba(0,0,0,0.48);
-      padding: 18px;
+    .thumbs {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding: 14px 20px 20px;
+      background: var(--panel);
     }
-    .theme-popup.active { display: flex; }
-    .theme-box {
-      width: min(360px, 100%);
-      background: var(--page);
-      color: var(--text);
-      border: 1px solid var(--line);
-      border-radius: 24px;
-      padding: 22px;
-      box-shadow: 0 24px 70px var(--shadow);
-    }
-    .theme-box h3 { font-family: Georgia, serif; font-size: 26px; margin-bottom: 8px; }
-    .theme-box p { color: var(--muted); margin-bottom: 18px; font-size: 14px; }
-    .theme-options { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .theme-choice {
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      padding: 16px 10px;
+
+    .thumbs img {
+      width: 92px;
+      height: 68px;
+      object-fit: cover;
+      border-radius: 10px;
+      opacity: .62;
+      border: 2px solid transparent;
       cursor: pointer;
-      background: var(--soft);
-      color: var(--text);
-      font-weight: bold;
-      text-align: center;
+      flex: 0 0 auto;
     }
-    .theme-choice:hover, .theme-choice.active { background: var(--accent); color: var(--accent-text); border-color: var(--accent); }
+
+    .thumbs img.active { opacity: 1; border-color: var(--accent-2); }
 
     .mobile-bottom-nav {
       display: none;
@@ -321,6 +468,7 @@
       left: 12px;
       right: 12px;
       bottom: 12px;
+      /* FIX: dùng var(--page) */
       background: var(--page);
       border: 1px solid var(--line);
       border-radius: 22px;
@@ -328,7 +476,17 @@
       overflow: hidden;
       box-shadow: 0 14px 40px var(--shadow);
     }
-    .mobile-bottom-nav a { flex: 1; text-align: center; padding: 10px 4px; font-size: 12px; color: var(--muted); }
+
+    /* FIX: bỏ dark override cứng */
+
+    .mobile-bottom-nav a {
+      flex: 1;
+      text-align: center;
+      padding: 10px 4px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
     .mobile-bottom-nav a b { display: block; font-size: 18px; color: var(--text); line-height: 1; }
 
     @media (max-width: 900px) {
@@ -341,6 +499,7 @@
       .concept-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
       .concept-card { min-height: 180px; }
       .features { grid-template-columns: 1fr 1fr; }
+      .feature { border-right: none; }
       .mobile-bottom-nav { display: flex; }
       .photo-area { min-height: 430px; }
     }
@@ -352,6 +511,7 @@
       .hero-content p { font-size: 16px; }
       .section-head { align-items: flex-start; flex-direction: column; }
       .section-head h2 { font-size: 28px; }
+      .concept-grid { grid-template-columns: 1fr 1fr; }
       .concept-card { min-height: 158px; border-radius: 15px; }
       .card-text { left: 12px; right: 12px; bottom: 12px; }
       .card-text h3 { font-size: 20px; }
@@ -368,7 +528,6 @@
     }
   </style>
 </head>
-
 <body>
   <div class="page">
     <header id="home">
@@ -377,16 +536,14 @@
           <span class="logo-mark">F</span>
           <span>Concept<br>Studio</span>
         </a>
-
         <nav class="nav-links">
-          <a href="#home">Trang chủ</a>
+          <a class="active" href="#home">Trang chủ</a>
           <a href="#concepts">Concepts</a>
           <a href="#service">Dịch vụ</a>
           <a href="#contact">Liên hệ</a>
         </nav>
-
         <div class="right-actions">
-          <button class="theme-open-btn" onclick="openThemePopup()" title="Đổi giao diện">◐</button>
+          <button class="theme-toggle" id="themeToggle" title="Đổi sáng/tối">🌙</button>
           <div class="socials">
             <a href="https://facebook.com/yourpage" target="_blank">f</a>
             <a href="https://zalo.me/0123456789" target="_blank">Zalo</a>
@@ -420,42 +577,42 @@
         <div class="concept-grid">
           <article class="concept-card" data-category="lookbook" onclick="openAlbum('Urban Street', albums.urbanStreet)">
             <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=900&q=80" alt="Urban Street">
-            <div class="card-text"><small>Lookbook</small><h3>Urban Street</h3><p>Bấm để xem album</p></div>
+            <div class="card-text"><small>Lookbook</small><h3>Urban Street</h3><p>12 ảnh</p></div>
           </article>
 
           <article class="concept-card" data-category="birthday" onclick="openAlbum('Birthday Vibes', albums.birthdayVibes)">
             <img src="https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?auto=format&fit=crop&w=900&q=80" alt="Birthday Vibes">
-            <div class="card-text"><small>Sinh nhật</small><h3>Birthday Vibes</h3><p>Bấm để xem album</p></div>
+            <div class="card-text"><small>Sinh nhật</small><h3>Birthday Vibes</h3><p>15 ảnh</p></div>
           </article>
 
           <article class="concept-card" data-category="custom" onclick="openAlbum('Couple Story', albums.coupleStory)">
             <img src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=900&q=80" alt="Couple Story">
-            <div class="card-text"><small>Custom</small><h3>Couple Story</h3><p>Bấm để xem album</p></div>
+            <div class="card-text"><small>Custom</small><h3>Couple Story</h3><p>18 ảnh</p></div>
           </article>
 
           <article class="concept-card" data-category="ready" onclick="openAlbum('Night Football', albums.nightFootball)">
             <img src="https://images.unsplash.com/photo-1577223625816-7546f13df25d?auto=format&fit=crop&w=900&q=80" alt="Night Football">
-            <div class="card-text"><small>Concept sẵn</small><h3>Night Football</h3><p>Bấm để xem album</p></div>
+            <div class="card-text"><small>Concept sẵn</small><h3>Night Football</h3><p>14 ảnh</p></div>
           </article>
 
           <article class="concept-card" data-category="lookbook" onclick="openAlbum('Cafe Vibes', albums.cafeVibes)">
             <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=900&q=80" alt="Cafe Vibes">
-            <div class="card-text"><small>Lookbook</small><h3>Cafe Vibes</h3><p>Bấm để xem album</p></div>
+            <div class="card-text"><small>Lookbook</small><h3>Cafe Vibes</h3><p>13 ảnh</p></div>
           </article>
 
           <article class="concept-card" data-category="custom" onclick="openAlbum('Mood Portrait', albums.moodPortrait)">
             <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=900&q=80" alt="Mood Portrait">
-            <div class="card-text"><small>Custom</small><h3>Mood Portrait</h3><p>Bấm để xem album</p></div>
+            <div class="card-text"><small>Custom</small><h3>Mood Portrait</h3><p>11 ảnh</p></div>
           </article>
 
           <article class="concept-card" data-category="ready" onclick="openAlbum('Basketball', albums.basketball)">
             <img src="https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=900&q=80" alt="Basketball">
-            <div class="card-text"><small>Concept sẵn</small><h3>Basketball</h3><p>Bấm để xem album</p></div>
+            <div class="card-text"><small>Concept sẵn</small><h3>Basketball</h3><p>16 ảnh</p></div>
           </article>
 
           <article class="concept-card" data-category="lookbook" onclick="openAlbum('Minimal', albums.minimal)">
             <img src="https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=900&q=80" alt="Minimal">
-            <div class="card-text"><small>Lookbook</small><h3>Minimal</h3><p>Bấm để xem album</p></div>
+            <div class="card-text"><small>Lookbook</small><h3>Minimal</h3><p>10 ảnh</p></div>
           </article>
         </div>
 
@@ -488,25 +645,12 @@
         </div>
         <button class="close" onclick="closeAlbum()">×</button>
       </div>
-
       <div class="photo-area">
         <button class="arrow left" onclick="prevPhoto()">‹</button>
         <img class="main-photo" id="mainPhoto" src="" alt="Ảnh concept">
         <button class="arrow right" onclick="nextPhoto()">›</button>
       </div>
-
       <div class="thumbs" id="thumbs"></div>
-    </div>
-  </div>
-
-  <div class="theme-popup" id="themePopup">
-    <div class="theme-box">
-      <h3>Chọn giao diện</h3>
-      <p>Khách có thể chọn nền sáng nhẹ hoặc nền tối cinematic để xem concept.</p>
-      <div class="theme-options">
-        <button class="theme-choice" id="lightChoice" onclick="setTheme('light')">☀️ Sáng</button>
-        <button class="theme-choice" id="darkChoice" onclick="setTheme('dark')">🌙 Tối</button>
-      </div>
     </div>
   </div>
 
@@ -515,15 +659,18 @@
       urbanStreet: [
         "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1400&q=85",
         "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=1400&q=85",
-        "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1400&q=85"
+        "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1400&q=85",
+        "https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=1400&q=85"
       ],
       birthdayVibes: [
         "https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?auto=format&fit=crop&w=1400&q=85",
         "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?auto=format&fit=crop&w=1400&q=85",
-        "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1400&q=85"
+        "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1400&q=85",
+        "https://images.unsplash.com/photo-1504196606672-aef5c9cefc92?auto=format&fit=crop&w=1400&q=85"
       ],
       coupleStory: [
         "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1400&q=85",
+        "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1400&q=85",
         "https://images.unsplash.com/photo-1494774157365-9e04c6720e47?auto=format&fit=crop&w=1400&q=85",
         "https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&w=1400&q=85"
       ],
@@ -557,31 +704,38 @@
     let currentAlbum = [];
     let currentIndex = 0;
 
+    const themeToggle = document.getElementById('themeToggle');
+    // FIX: không dùng localStorage (không cần thiết, dùng sessionStorage thay thế hoặc bỏ)
+    themeToggle.textContent = '🌙';
+
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark');
+      const isDark = document.body.classList.contains('dark');
+      themeToggle.textContent = isDark ? '☀️' : '🌙';
+    });
+
     function openAlbum(title, photos) {
       currentAlbum = photos;
       currentIndex = 0;
-      document.getElementById("albumTitle").textContent = title;
-      document.getElementById("lightbox").classList.add("active");
+      document.getElementById('albumTitle').textContent = title;
+      document.getElementById('lightbox').classList.add('active');
       showPhoto();
     }
 
     function closeAlbum() {
-      document.getElementById("lightbox").classList.remove("active");
+      document.getElementById('lightbox').classList.remove('active');
     }
 
     function showPhoto() {
-      document.getElementById("mainPhoto").src = currentAlbum[currentIndex];
-      document.getElementById("counter").textContent = `${currentIndex + 1} / ${currentAlbum.length}`;
-      const thumbs = document.getElementById("thumbs");
-      thumbs.innerHTML = "";
+      document.getElementById('mainPhoto').src = currentAlbum[currentIndex];
+      document.getElementById('counter').textContent = `${currentIndex + 1} / ${currentAlbum.length}`;
+      const thumbs = document.getElementById('thumbs');
+      thumbs.innerHTML = '';
       currentAlbum.forEach((photo, index) => {
-        const img = document.createElement("img");
+        const img = document.createElement('img');
         img.src = photo;
-        img.className = index === currentIndex ? "active" : "";
-        img.onclick = function () {
-          currentIndex = index;
-          showPhoto();
-        };
+        img.className = index === currentIndex ? 'active' : '';
+        img.onclick = () => { currentIndex = index; showPhoto(); };
         thumbs.appendChild(img);
       });
     }
@@ -597,64 +751,22 @@
     }
 
     function filterCards(category, button) {
-      const buttons = document.querySelectorAll(".filter-btn");
-      buttons.forEach(function (btn) {
-        btn.classList.remove("active");
-      });
-      button.classList.add("active");
-
-      const cards = document.querySelectorAll(".concept-card");
-      cards.forEach(function (card) {
-        card.style.display = (category === "all" || card.dataset.category === category) ? "block" : "none";
+      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+      document.querySelectorAll('.concept-card').forEach(card => {
+        card.style.display = (category === 'all' || card.dataset.category === category) ? 'block' : 'none';
       });
     }
 
-    function openThemePopup() {
-      document.getElementById("themePopup").classList.add("active");
-      updateThemeButtons();
-    }
-
-    function closeThemePopup() {
-      document.getElementById("themePopup").classList.remove("active");
-    }
-
-    function setTheme(theme) {
-      if (theme === "dark") {
-        document.body.classList.add("dark");
-      } else {
-        document.body.classList.remove("dark");
-      }
-      localStorage.setItem("conceptTheme", theme);
-      updateThemeButtons();
-      closeThemePopup();
-    }
-
-    function updateThemeButtons() {
-      const isDark = document.body.classList.contains("dark");
-      document.getElementById("lightChoice").classList.toggle("active", !isDark);
-      document.getElementById("darkChoice").classList.toggle("active", isDark);
-    }
-
-    const savedTheme = localStorage.getItem("conceptTheme") || "light";
-    if (savedTheme === "dark") document.body.classList.add("dark");
-    updateThemeButtons();
-
-    document.getElementById("lightbox").addEventListener("click", function (event) {
-      if (event.target.id === "lightbox") closeAlbum();
+    document.getElementById('lightbox').addEventListener('click', function(e) {
+      if (e.target.id === 'lightbox') closeAlbum();
     });
 
-    document.getElementById("themePopup").addEventListener("click", function (event) {
-      if (event.target.id === "themePopup") closeThemePopup();
-    });
-
-    document.addEventListener("keydown", function (event) {
-      if (event.key === "Escape") {
-        closeAlbum();
-        closeThemePopup();
-      }
-      if (!document.getElementById("lightbox").classList.contains("active")) return;
-      if (event.key === "ArrowRight") nextPhoto();
-      if (event.key === "ArrowLeft") prevPhoto();
+    document.addEventListener('keydown', function(e) {
+      if (!document.getElementById('lightbox').classList.contains('active')) return;
+      if (e.key === 'Escape') closeAlbum();
+      if (e.key === 'ArrowRight') nextPhoto();
+      if (e.key === 'ArrowLeft') prevPhoto();
     });
   </script>
 </body>
